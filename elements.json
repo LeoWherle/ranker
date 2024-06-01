@@ -1,0 +1,32 @@
+[
+    {
+        "title": "Leo",
+        "image": "avatars/Leo Rentmeister.png",
+        "description": "The one who knows"
+    },
+    {
+        "title": "Nath",
+        "image": "avatars/Nathanael.png",
+        "description": "Fearless developer"
+    },
+    {
+        "title": "Theodore",
+        "image": "avatars/TheodoreEpitech.png",
+        "description": "The one who does"
+    },
+    {
+        "title": "Martin",
+        "image": "avatars/Martin.png",
+        "description": "More than a developer"
+    },
+    {
+        "title": "Lucien",
+        "image": "avatars/mathematisse.png",
+        "description": "Fallen from the sky"
+    },
+    {
+        "title": "Rapth",
+        "image": "avatars/Castres-Raphael.png",
+        "description": "Unstoppable"
+    }
+]

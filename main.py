@@ -1,18 +1,21 @@
-import tkinter as tk
-from tkinter import messagebox
-from PIL import Image, ImageTk, ImageDraw
+"""A simple pairwise ranking app using tkinter."""
+
 import json
 import os
+import tkinter as tk
+
+from PIL import Image, ImageDraw, ImageTk
 
 
 class ElementManager:
+    """A class to manage elements."""
+
     def __init__(self, json_path, image_size=200):
         self.image_size = image_size
         self.elements = self.load_elements(json_path)
 
     def load_elements(self, json_path):
-        """
-        Load the elements from a JSON file.
+        """Load the elements from a JSON file.
 
         Example JSON file:
         [
@@ -38,6 +41,14 @@ class ElementManager:
             return json.load(f)
 
     def load_image(self, path):
+        """Load an image from a file.
+
+        Args:
+            path (str): The path to the image file.
+
+        Returns:
+            PhotoImage: The image.
+        """
         if os.path.exists(path):
             image = Image.open(path)
             image = image.resize((self.image_size, self.image_size))
@@ -51,6 +62,8 @@ class ElementManager:
 
 
 class PairwiseComparator:
+    """A class to compare elements pairwise."""
+
     def __init__(self, elements):
         self.elements = elements
         self.n = len(elements)
@@ -59,16 +72,31 @@ class PairwiseComparator:
         self.rankings = [0] * self.n
 
     def next_pair(self):
+        """Get the next pair of elements to compare.
+
+        Returns:
+            tuple: A pair of indices of the elements to compare.
+        """
         if self.index < len(self.pairs):
             return self.pairs[self.index]
         else:
             return None
 
     def update_ranking(self, winner):
+        """Update the ranking based on the winner of the comparison.
+
+        Parameters:
+            winner (int): The index of the winner element.
+        """
         self.rankings[winner] += 1
         self.index += 1
 
     def get_rankings(self):
+        """Get the rankings of the elements.
+
+        Returns:
+            list: The ranked elements.
+        """
         return [
             x
             for _, x in sorted(
@@ -80,18 +108,19 @@ class PairwiseComparator:
 
 
 class PairwiseRankingApp:
-    def __init__(self, root, element_manager, comparator):
-        self.root = root
-        self.element_manager = element_manager
-        self.comparator = comparator
+    """A class to create a pairwise ranking app using tkinter."""
+    def __init__(self, tkroot, elem_manager, comparator_c):
+        self.root = tkroot
+        self.element_manager = elem_manager
+        self.comparator = comparator_c
 
-        self.label = tk.Label(root, text="Which one do you prefer?")
+        self.label = tk.Label(tkroot, text="Which one do you prefer?")
         self.label.pack()
 
-        self.frame1 = tk.Frame(root)
+        self.frame1 = tk.Frame(tkroot)
         self.frame1.pack(side="left", padx=20, pady=20)
 
-        self.frame2 = tk.Frame(root)
+        self.frame2 = tk.Frame(tkroot)
         self.frame2.pack(side="right", padx=20, pady=20)
 
         self.button1 = tk.Button(self.frame1, command=self.choose_first)
@@ -100,11 +129,12 @@ class PairwiseRankingApp:
         self.button2 = tk.Button(self.frame2, command=self.choose_second)
         self.button2.pack()
 
-        self.result = tk.Label(root, text="")
+        self.result = tk.Label(tkroot, text="")
 
         self.update_buttons()
 
     def update_buttons(self):
+        """Update the buttons with the next pair of elements."""
         pair = self.comparator.next_pair()
         if pair is not None:
             i, j = pair
@@ -136,14 +166,17 @@ class PairwiseRankingApp:
             self.display_results()
 
     def choose_first(self):
+        """Update the ranking based on the first choice."""
         self.comparator.update_ranking(self.comparator.next_pair()[0])
         self.update_buttons()
 
     def choose_second(self):
+        """Update the ranking based on the second choice."""
         self.comparator.update_ranking(self.comparator.next_pair()[1])
         self.update_buttons()
 
     def display_results(self):
+        """Display the results of the ranking."""
         sorted_elements = self.comparator.get_rankings()
         self.result.config(text="Ranking:")
         self.result.pack()
@@ -186,7 +219,6 @@ class PairwiseRankingApp:
         # Configure the canvas to scroll
         rankings_frame.update_idletasks()
         canvas.configure(scrollregion=canvas.bbox("all"))
-        # self.root.quit()
 
 
 if __name__ == "__main__":
